@@ -4,6 +4,31 @@ This repository provides a containerized environment for building a bootable ISO
 
 In the past, I have used various method to achieve similar results (such as Packer controlling a full deployment pipeline to build custom images), but BootC offers a more streamlined and efficient approach.
 
+## Usage
+
+To build the bootable ISO image, you can use the following command:
+
+```bash
+podman build -t bootc-server --build-arg USERNAME=your_user --build-arg PASSWORD='your_password' .
+```
+
+```bash
+mkdir -p output
+mkdir -p /var/lib/containers/storage
+podman run \
+  --rm \
+  -it \
+  --privileged \
+  --pull=newer \
+  --security-opt label=type:unconfined_t \
+  -v /var/lib/containers/storage:/var/lib/containers/storage \
+  -v ./output:/output \
+  quay.io/centos-bootc/bootc-image-builder:latest \
+  --type anaconda-iso \
+  --use-librepo=True \
+  localhost/bootc:latest --rootfs xfs
+```
+
 ## What is BootC / Bootable Container?
 
 BootC is a tool that simplifies the process of creating bootable container images. It provides a set of commands and configurations to streamline the building, testing, and deployment of these images, making it easier for developers to work with containerized environments.

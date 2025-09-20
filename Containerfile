@@ -21,5 +21,4 @@ RUN groupadd -g 1000 ${USERNAME} \
     && chmod 700 /home/${USERNAME}
 
 # -- Finalize container setup --
-RUN systemctl set-default graphical.target
 RUN bootc container lint

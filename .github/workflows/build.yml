@@ -1,0 +1,39 @@
+name: CI
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+
+        - run: |
+            sudo apt-get update
+            sudo apt-get install qemu-system
+    
+        - uses: actions/checkout@v5
+
+        - name: Log in to harbor
+          uses: redhat-actions/podman-login@v1
+          with:
+            username: ${{ secrets.HARBOR_USERNAME }}
+            password: ${{ secrets.HARBOR_PASSWORD }}
+            registry: ${{ secrets.HARBOR_REGISTRY }}
+
+        - name: Extract branch name
+          shell: bash
+          run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          id: extract_branch
+        
+        - run: |
+            sudo podman build \
+                --build-arg USERNAME=${{ secrets.USERNAME }} \
+                --build-arg PASSWORD=${{ secrets.PASSWORD }} \
+                -t ${{ secrets.HARBOR_REGISTRY }}/bootc/server:${{ steps.extract_branch.outputs.branch }} .
+        - name: Push to Harbor
+          run: |
+            sudo podman push ${{ secrets.HARBOR_REGISTRY }}/bootc/server:${{ steps.extract_branch.outputs.branch }}

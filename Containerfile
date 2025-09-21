@@ -5,7 +5,7 @@ FROM quay.io/fedora/fedora-bootc:latest
 ## https://rpmfusion.org/
 RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
-ENV BASE_PKG="tmux unzip vim htop qemu-guest-agent @container-management @hardware-support zsh rsync"
+ENV BASE_PKG="tmux unzip vim htop qemu-guest-agent @container-management @hardware-support zsh rsync nginx"
 RUN dnf install -y ${BASE_PKG} && \
     dnf clean all
 
@@ -19,6 +19,8 @@ RUN groupadd -g 1000 ${USERNAME} \
     && mkdir -p /home/${USERNAME} \
     && chown ${USERNAME}:${USERNAME} /home/${USERNAME} \
     && chmod 700 /home/${USERNAME}
+
+RUN echo VARIANT="QJoly server" && echo VARIANT_ID=com.github.qjoly.bootc-server >> /usr/lib/os-release
 
 # -- Finalize container setup --
 RUN bootc container lint

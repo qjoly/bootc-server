@@ -5,7 +5,7 @@ FROM quay.io/fedora/fedora-bootc:latest
 ## https://rpmfusion.org/
 RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
-ENV BASE_PKG="tmux unzip vim htop qemu-guest-agent @container-management @hardware-support zsh rsync nginx"
+ENV BASE_PKG="tmux unzip vim htop qemu-guest-agent @container-management @hardware-support zsh rsync nginx cowsay"
 RUN dnf install -y ${BASE_PKG} && \
     dnf clean all
 
